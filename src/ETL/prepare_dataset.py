@@ -92,8 +92,6 @@ def tokenize_prompt(examples, tokenizer):
 
 def prepare_dataset_for_training(dataset, tokenizer):
     """
-    Full pipeline: format prompts and tokenize dataset.
-    
     On notebook, as tokenizer will be in previous cells, we can do:
     tokenized_train_dataset = dataset["train"].map(generate_and_tokenize_prompt)
     tokenized_test_dataset = dataset["test"].map(generate_and_tokenize_prompt)

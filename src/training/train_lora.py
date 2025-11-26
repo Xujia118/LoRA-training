@@ -7,10 +7,10 @@ from transformers import (
     DataCollatorForLanguageModeling
 )
 from peft import LoraConfig, get_peft_model
-from datasets import load_from_disk
+from datasets import load_dataset
 from src.configs import config
 from src.utils.tokenizer import get_tokenizer
-from ETL.process_data import prepare_dataset_for_training
+from ETL.prepare_dataset import prepare_dataset_for_training
 
 
 def load_model():
@@ -59,14 +59,15 @@ def apply_lora(model):
 
 def train_model():
     # 1️⃣ Load dataset from disk
-    dataset = load_from_disk(config.DATASET_OUTPUT_DIR)
+    dataset = load_dataset(config.HF_DATASET_REPO)
 
-    # 2️⃣ Load tokenizer and prepare dataset
-    tokenizer = get_tokenizer()
-    train_ds, test_ds = prepare_dataset_for_training(dataset, tokenizer) #TODO change to cloud
+    # 2️⃣ Split
+    train_ds = dataset['train']
+    test_ds = dataset['test']
 
-    # 3️⃣ Load model
+    # 3️⃣ Load model and tokenizer
     model = load_model()
+    tokenizer = get_tokenizer()
     print_trainable_parameters(model)
 
     # 4️⃣ Apply LoRA
