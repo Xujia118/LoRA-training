@@ -1,6 +1,5 @@
 import torch
 from transformers import (
-    AutoTokenizer,
     AutoModelForCausalLM,
     BitsAndBytesConfig,
     Trainer,
@@ -11,7 +10,7 @@ from peft import LoraConfig, get_peft_model
 from datasets import load_from_disk
 from src.configs import config
 from src.utils.tokenizer import get_tokenizer
-from src.training.process_data import prepare_dataset_for_training
+from ETL.process_data import prepare_dataset_for_training
 
 
 def load_model():
@@ -64,7 +63,7 @@ def train_model():
 
     # 2️⃣ Load tokenizer and prepare dataset
     tokenizer = get_tokenizer()
-    train_ds, test_ds = prepare_dataset_for_training(dataset, tokenizer)
+    train_ds, test_ds = prepare_dataset_for_training(dataset, tokenizer) #TODO change to cloud
 
     # 3️⃣ Load model
     model = load_model()
@@ -98,8 +97,8 @@ def train_model():
     # 7️⃣ Trainer
     trainer = Trainer(
         model=model,
-        train_dataset=train_ds.select(range(50)),
-        eval_dataset=test_ds.select(range(50)),
+        train_dataset=train_ds.select(range(5)),
+        eval_dataset=test_ds.select(range(5)),
         args=training_args,
         data_collator=data_collator
     )

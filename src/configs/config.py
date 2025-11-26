@@ -2,7 +2,7 @@
 # Dataset parameters
 BASE_MODEL_ID = "microsoft/phi-2"
 DATASET_ID = "garage-bAInd/Open-Platypus"
-
+HF_DATASET_REPO = "deepdive_LoRA_Open_Platypus"
 
 DATASET_OUTPUT_DIR = "data/platypus"
 CHECKPOINT_DIR = "checkpoints"
