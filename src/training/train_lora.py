@@ -13,17 +13,38 @@ from src.utils.tokenizer import get_tokenizer
 from ETL.prepare_dataset import prepare_dataset_for_training
 
 
+# 8bit quantization setup
 def load_model():
     bnb_config = BitsAndBytesConfig(
-        load_in_8bit=True,
-        bnb_8bit_use_double_quant=True,
-        bnb_8bit_quant_type="nf4",
+        load_in_8bit=True, 
+        # 8-bit doesn't typically use double quant or nf4
     )
 
     model = AutoModelForCausalLM.from_pretrained(
         config.BASE_MODEL_ID,
         trust_remote_code=True,
-        dtype=torch.bfloat16,
+        # dtype is generally not explicitly set here when using 8bit
+        device_map="auto",
+        quantization_config=bnb_config,
+    )
+
+    return model
+
+
+# 4bit quantization setup
+def load_model():
+    bnb_config = BitsAndBytesConfig(
+        load_in_8bit=True,
+        bnb_8bit_use_double_quant=True,
+        bnb_8bit_quant_type="nf4",
+        # Use torch.float16 if your GPU doesn't support bfloat16
+        bnb_4bit_compute_dtype=torch.bfloat16
+    )
+
+    model = AutoModelForCausalLM.from_pretrained(
+        config.BASE_MODEL_ID,
+        trust_remote_code=True,
+        # dtype is redundant/conflicting if bnb_4bit_compute_dtype is set
         device_map="auto",
         quantization_config=bnb_config,
     )
